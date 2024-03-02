@@ -1,6 +1,5 @@
 from django.db.models import Q
 from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework.views import APIView
 from rest_framework.generics import (
     ListAPIView,
     CreateAPIView,
@@ -26,7 +25,7 @@ class CommentListAPIView(ListAPIView):
     API endpoint that allows ALL users view all the posts
     '''
     serializer_class = CommentListSerializer
-    permission_classes = [AllowAny, ]
+    permission_classes = (AllowAny, )
     lookup_field = 'id'
     '''
     sorted queryset with search fields (?search='')
@@ -60,7 +59,7 @@ class CommentCreateAPIView(CreateAPIView):
     API endpoint that allows ADMIN users create posts
     '''
     queryset = Comment.objects.all()
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = (IsAuthenticatedOrReadOnly, )
 
     def get_serializer_class(self):
         model_type = self.request.query_params.get('type', 'post')
@@ -79,7 +78,7 @@ class CommentDetailAPIView(RetrieveAPIView, UpdateAPIView, DestroyAPIView):
     '''
     queryset = Comment.objects.all()
     serializer_class = CommentDetailSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
 
 
 

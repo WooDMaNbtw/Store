@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import Project
-from accounts.serializers import UserDetailSerializer
 from biography.models import Experience
 
 

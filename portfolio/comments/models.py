@@ -3,9 +3,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from rest_framework.reverse import reverse
-
 from comments.managers import CommentManager
-
 from blog.models import Post
 
 

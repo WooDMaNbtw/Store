@@ -1,6 +1,9 @@
+import requests
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from django.db.models import Q
+from rest_framework_simplejwt.serializers import TokenObtainSerializer, TokenObtainPairSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
@@ -64,7 +67,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
 
 class UserLoginSerializer(serializers.ModelSerializer):
-    token = serializers.CharField(allow_blank=True, read_only=True)
+    access_token = serializers.CharField(allow_blank=True, read_only=True)
     username = serializers.CharField(required=False, allow_blank=True)
     email = serializers.EmailField(allow_blank=False)
 
@@ -74,7 +77,7 @@ class UserLoginSerializer(serializers.ModelSerializer):
             'username',
             'email',
             'password',
-            'token'
+            'access_token'
         )
         extra_kwargs = {
             'password': {
@@ -95,7 +98,7 @@ class UserLoginSerializer(serializers.ModelSerializer):
             Q(email=email) |
             Q(username=username)
         ).distinct()
-        # user = user.exclude(email__isnull=email).exclude(email__iexact='')
+
         if user.exists() and user.count() == 1:
             user_obj = user.first()
         else:
@@ -105,7 +108,19 @@ class UserLoginSerializer(serializers.ModelSerializer):
             if not user_obj.check_password(password):
                 raise serializers.ValidationError("Incorrect credentials please try again.")
 
-        data['token'] = "NEWEWESDSD"
+        refresh = RefreshToken.for_user(user_obj)
+        data["access_token"] = str(refresh.token)
 
+        return data
+
+
+class TokenPairSerializer(TokenObtainPairSerializer):
+
+    def validate(self, attrs):
+        raw_username = attrs["username"]
+        users = User.objects.filter(email=raw_username)
+        if users:
+            attrs['username'] = users.first().username
+        data = super(TokenPairSerializer, self).validate(attrs)
         return data
 

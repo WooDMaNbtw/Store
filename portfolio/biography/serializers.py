@@ -1,9 +1,7 @@
 from rest_framework import serializers
 from .models import Experience
 from accounts.serializers import UserDetailSerializer
-from projects.serializers import ProjectListSerializer
 from projects.models import Project
-
 from projects.serializers import ProjectDetailSerializer
 
 

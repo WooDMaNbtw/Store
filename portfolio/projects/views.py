@@ -1,6 +1,5 @@
 from django.db.models import Q
 from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework.views import APIView
 from rest_framework.generics import (
     ListAPIView,
     CreateAPIView,
@@ -9,7 +8,6 @@ from rest_framework.generics import (
     UpdateAPIView,
 )
 from rest_framework.permissions import (
-    IsAuthenticatedOrReadOnly,
     AllowAny, IsAdminUser,
 )
 
@@ -24,7 +22,7 @@ from .serializers import (
 class ProjectListAPIView(ListAPIView):
 
     serializer_class = ProjectListSerializer
-    permission_classes = [AllowAny, ]
+    permission_classes = (AllowAny, )
 
     filter_backends = (SearchFilter, OrderingFilter)
     search_fields = ('title', )
@@ -45,18 +43,18 @@ class ProjectCreateAPIView(CreateAPIView):
 
     queryset = Project.objects.all()
     serializer_class = ProjectCreateSerializer
-    permission_classes = [IsAdminUser, ]
+    permission_classes = (IsAdminUser, )
 
 
 class ProjectDetailAPIView(RetrieveAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectDetailSerializer
-    permission_classes = [AllowAny, ]
+    permission_classes = (AllowAny, )
     lookup_field = "id"
 
 
 class ProjectUpdateAPIView(RetrieveAPIView, UpdateAPIView, DestroyAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectDetailSerializer
-    permission_classes = [IsAdminUser, ]
+    permission_classes = (IsAdminUser, )
     lookup_field = "id"

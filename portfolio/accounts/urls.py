@@ -8,5 +8,4 @@ from .views import (
 urlpatterns = [
     path('create/', UserCreateAPIView.as_view(), name='create'),
     path('login/', UserLoginAPIView.as_view(), name='login'),
-    path('logout/', UserLoginAPIView.as_view(), name='login'),
 ]
