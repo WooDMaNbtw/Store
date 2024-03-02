@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.template.defaultfilters import slugify
-from django.utils.safestring import mark_safe
 from rest_framework.reverse import reverse
 
 
@@ -10,7 +9,7 @@ def upload_location(instance, filename):
 
 
 class Post(models.Model):
-    ''' Posts model fields '''
+    """ Posts model fields """
     user = models.ForeignKey(User, default=1, on_delete=models.CASCADE)
     title = models.CharField(max_length=120)
     slug = models.SlugField(unique=True)
@@ -37,7 +36,7 @@ class Post(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse("posts:detail", kwargs={"slug": self.slug})
+        return reverse("blog:details", kwargs={"slug": self.slug})
 
     class Meta:
         ordering = ['id']
