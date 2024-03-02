@@ -10,7 +10,7 @@ from rest_framework.generics import (
 from .paginations import PostPageNumberPagination
 from rest_framework.permissions import (
     IsAdminUser,
-    AllowAny,
+    AllowAny, IsAuthenticated,
 )
 
 from .models import Post
@@ -61,7 +61,7 @@ class PostCreateAPIView(CreateAPIView):
     """
     queryset = Post.objects.all()
     serializer_class = PostCreateSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser, IsAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -73,7 +73,7 @@ class PostDetailAPIView(RetrieveAPIView):
     """
     queryset = Post.objects.all()
     serializer_class = PostDetailSerializer
-    permission_classes = [AllowAny]
+    permission_classes = (IsAuthenticated, )
     lookup_field = 'slug'
 
 
@@ -84,7 +84,7 @@ class PostUpdateAPIView(UpdateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostDetailSerializer
     lookup_field = 'slug'
-    permission_classes = [IsAdminUser, ]
+    permission_classes = (IsAdminUser, IsAuthenticated)
 
     def perform_update(self, serializer):
         serializer.save(user=self.request.user)
@@ -96,5 +96,5 @@ class PostDeleteAPIView(DestroyAPIView):
     '''
     queryset = Post.objects.all()
     serializer_class = PostDetailSerializer
-    permission_classes = [IsAdminUser, ]
+    permission_classes = (IsAdminUser, IsAuthenticated)
     lookup_field = 'slug'

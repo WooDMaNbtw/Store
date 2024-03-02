@@ -2,7 +2,6 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
-from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin
 from .models import Comment
 from accounts.serializers import UserDetailSerializer
 
@@ -70,12 +69,6 @@ class __BaseCommentSerializer(serializers.ModelSerializer):
     replies = None
     content_object_url = None
     meta_fields = None
-
-    ''' 
-    <! override class Meta !>
-    class Meta:
-        ...
-    '''
 
     @staticmethod
     def get_replies(obj):

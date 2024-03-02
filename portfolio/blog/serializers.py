@@ -1,8 +1,6 @@
 from rest_framework import serializers
-
 from .models import Post
 from accounts.serializers import UserDetailSerializer
-
 from comments.serializers import CommentListSerializer
 
 
