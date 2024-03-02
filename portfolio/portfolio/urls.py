@@ -13,9 +13,11 @@ schema_view = get_swagger_view(
 urlpatterns = [
     path('swagger-ui/', schema_view),
     path('admin/', admin.site.urls),
-    path("api/v0/posts/", include("blog.urls"), name="blog-api"),
-    path("api/v0/comments/", include("comments.urls"), name="comments-api"),
-    path("api/v0/users/", include("accounts.urls"), name="accounts-api"),
+    path("api/v0/posts/", include("blog.urls"), name="blog"),
+    path("api/v0/comments/", include("comments.urls"), name="comments"),
+    path("api/v0/users/", include("accounts.urls"), name="accounts"),
+    path("api/v0/biography/", include("biography.urls"), name="biography"),
+    path("api/v0/projects/", include("projects.urls"), name="projects")
 ]
 
 if settings.DEBUG:
