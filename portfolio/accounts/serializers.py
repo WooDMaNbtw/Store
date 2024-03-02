@@ -89,14 +89,13 @@ class UserLoginSerializer(serializers.ModelSerializer):
         email = data.get('email')
         username = data.get('username')
         password = data.get('password')
-        if not email and not username:
-            raise serializers.ValidationError("User name or email is required to login.")
-
+        if not email:
+            raise serializers.ValidationError("User email is required to login.")
         user = User.objects.filter(
             Q(email=email) |
             Q(username=username)
         ).distinct()
-        user = user.exclude(email__isnull=email).exclude(email__iexact='')
+        # user = user.exclude(email__isnull=email).exclude(email__iexact='')
         if user.exists() and user.count() == 1:
             user_obj = user.first()
         else:

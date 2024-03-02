@@ -90,7 +90,8 @@ INSTALLED_APPS += [
     'comments',
     'blog',
     'contacts',
-    'projects'
+    'projects',
+    'biography',
 ]
 
 MIDDLEWARE = [
