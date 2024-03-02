@@ -26,6 +26,7 @@ class CommentManager(models.Manager):
             obj_queryset = SomeModel.objects.filter(slug=slug)
             if obj_queryset.exists() and obj_queryset.count() == 1:
                 instance = self.model()
+                instance.post = obj_queryset.first()
                 instance.slug = slug
                 instance.content = content
                 instance.user = user

@@ -63,9 +63,9 @@ class CommentCreateAPIView(CreateAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_serializer_class(self):
-        model_type = self.request.GET.get('type')
-        slug = self.request.GET.get('slug')
-        parent_id = self.request.GET.get('parent_id')
+        model_type = self.request.query_params.get('type', 'post')
+        slug = self.request.query_params.get('slug')
+        parent_id = self.request.query_params.get('parent_id')
         return create_comment_serializer(
             model_type=model_type,
             slug=slug,

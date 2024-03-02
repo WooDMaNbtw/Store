@@ -21,6 +21,7 @@ def create_comment_serializer(model_type='post', slug=None, parent_id=None, user
 
         def __init__(self, *args, **kwargs):
             self.model_type = model_type
+            print(model_type)
             self.slug = slug
             self.user = user
             self.parent_obj = None
@@ -62,37 +63,45 @@ def create_comment_serializer(model_type='post', slug=None, parent_id=None, user
     return CommentCreateSerializer
 
 
-class CommentListSerializer(serializers.ModelSerializer):
-    url = serializers.HyperlinkedIdentityField(
-        view_name='detail',
-    )
-    reply_count = SerializerMethodField()
+class __BaseCommentSerializer(serializers.ModelSerializer):
 
+    user = UserDetailSerializer()
+    replies_count = None
+    replies = None
+    content_object_url = None
+    meta_fields = None
+
+    ''' 
+    <! override class Meta !>
     class Meta:
-        model = Comment
-        fields = (
-            'id',
-            'url',
-            'content_type',
-            'object_id',
-            'parent',
-            'content',
-            'reply_count',
-            'timestamp',
-        )
+        ...
+    '''
 
     @staticmethod
-    def get_reply_count(obj):
-        if obj.is_parent:
+    def get_replies(obj):
+        if obj is not None and obj.is_parent:
+            return CommentChildSerializer(obj.children(), many=True).data
+        return None
+
+    @staticmethod
+    def get_replies_count(obj):
+        if obj is not None and obj.is_parent:
             return obj.children().count()
         return 0
 
+    @staticmethod
+    def get_content_object_url(obj):
+        if obj is not None:
+            try:
+                return obj.content_object.get_api_url()
+            except AttributeError:
+                return None
+        return None
 
-class CommentDetailSerializer(serializers.ModelSerializer):
-    user = UserDetailSerializer(read_only=True)
-    reply_count = SerializerMethodField()
-    replies = SerializerMethodField()
-    content_object_url = SerializerMethodField()
+
+class CommentListSerializer(__BaseCommentSerializer):
+
+    replies_count = SerializerMethodField()
 
     class Meta:
         model = Comment
@@ -100,7 +109,24 @@ class CommentDetailSerializer(serializers.ModelSerializer):
             'id',
             'user',
             'content',
-            'reply_count',
+            'replies_count',
+            'timestamp',
+        )
+
+
+class CommentDetailSerializer(__BaseCommentSerializer):
+
+    content_object_url = SerializerMethodField()
+    replies_count = SerializerMethodField()
+    replies = SerializerMethodField()
+
+    class Meta:
+        model = Comment
+        fields = (
+            'id',
+            'user',
+            'content',
+            'replies_count',
             'replies',
             'timestamp',
             'content_object_url',
@@ -110,28 +136,8 @@ class CommentDetailSerializer(serializers.ModelSerializer):
             'replies'
         )
 
-    @staticmethod
-    def get_replies(obj):
-        if obj.is_parent:
-            return CommentChildSerializer(obj.children(), many=True).data
-        return None
 
-    @staticmethod
-    def get_reply_count(obj):
-        if obj.is_parent:
-            return obj.children().count()
-        return 0
-
-    @staticmethod
-    def get_content_object_url(obj):
-        try:
-            return obj.content_object.get_api_url()
-        except AttributeError:
-            return None
-
-
-class CommentChildSerializer(serializers.ModelSerializer):
-    user = UserDetailSerializer(read_only=True)
+class CommentChildSerializer(__BaseCommentSerializer):
 
     class Meta:
         model = Comment
