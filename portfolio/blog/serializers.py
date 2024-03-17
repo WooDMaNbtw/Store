@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Post
-from accounts.serializers import UserDetailSerializer
+from accounts.serializers import UserSerializer
 from comments.serializers import CommentListSerializer
 
 
@@ -9,7 +9,7 @@ class PostListSerializer(serializers.ModelSerializer):
         view_name='blog-detail',
         lookup_field='slug'
     )
-    user = UserDetailSerializer(read_only=True)
+    user = UserSerializer(read_only=True)
     image = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
 
@@ -19,6 +19,7 @@ class PostListSerializer(serializers.ModelSerializer):
             'id',
             'url',
             'user',
+            'slug',
             'title',
             'content',
             'publish',
@@ -62,7 +63,7 @@ class PostCreateSerializer(serializers.ModelSerializer):
 
 
 class PostDetailSerializer(serializers.ModelSerializer):
-    user = UserDetailSerializer(read_only=True)
+    user = UserSerializer(read_only=True)
     comments = serializers.SerializerMethodField()
 
     class Meta:

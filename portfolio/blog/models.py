@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from accounts.models import User
 from django.db import models
 from django.template.defaultfilters import slugify
 from rest_framework.reverse import reverse

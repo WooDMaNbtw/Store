@@ -63,14 +63,14 @@ INSTALLED_APPS = [
 
 # 3-d party services
 INSTALLED_APPS += [
-    # 3-d party apps
-    'djoser',
     'rest_framework',
     'rest_framework_swagger',
     'drf_yasg',
     'rest_framework_simplejwt',
     'drf_standardized_errors',
     'corsheaders',
+    'rest_framework.authtoken',
+    'djoser',
 ]
 
 # Local Apps
@@ -78,13 +78,13 @@ INSTALLED_APPS += [
     'accounts',
     'comments',
     'blog',
-    'contacts',
     'projects',
     'biography',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -187,8 +187,7 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication'
+        'rest_framework.authentication.TokenAuthentication'
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny'
@@ -197,43 +196,58 @@ REST_FRAMEWORK = {
 }
 
 # JWT
-JWT_AUTH = {
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=2),
-    'JWT_ALLOW_REFRESH': True,
-    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),  # default
-    # 'JWT_AUTH_HEADER_PREFIX': 'JWT'
+SIMPLE_JWT = {
+    'AUTH_HEADER_TYPES': ('JWT',),
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=10)
 }
 
 # DJOSER
 DJOSER = {
+    'LOGIN_FIELD': 'email',
+    # 'USER_CREATE_PASSWORD_RETYPE': True,
+    'ACTIVATION_URL': '127.0.0.1:3000/sign-in/?uid={uid}&token={token}',
     'SEND_ACTIVATION_EMAIL': True,
     'SEND_CONFIRMATION_EMAIL': True,
-    'ACTIVATION_URL': 'auth/activate/{uid}/{token}/',
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
+    'PASSWORD_RESET_CONFIRM_URL': '#/password-reset/{uid}/{token}',
+    'SET_PASSWORD_RETYPE': True,
     'PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND': True,
-    'PASSWORD_RESET_CONFIRM_URL': 'auth/reset/confirm/{uid}/{token}/',
-    'TOKEN_MODEL': None
+    'TOKEN_MODEL': None,
+    'SERIALIZERS': {
+        'user_create': 'accounts.serializers.UserCreateSerializer',
+        'current_user': 'accounts.serializers.UserDetailSerializer',
+        'user': 'accounts.serializers.UserSerializer'
+    }
 }
 
-# Allauth
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_UNIQUE = True
-ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
-ACCOUNT_AUTHENTICATION_METHOD = "username"
-ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-ACCOUNT_USERNAME_BLACKLIST = ["admin", "administrator", "moderator", "DjangoSchool"]
-ACCOUNT_USERNAME_MIN_LENGTH = 4
-LOGIN_REDIRECT_URL = "/"
-ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = '/'
-ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
-
+LOGIN_FIELD = 'email'
 
 # CORS
 CORS_ALLOWED_ORIGINS = env("CORS_ALLOWED_ORIGINS").split(", ")
 CORS_ORIGIN_ALLOW_ALL = bool(env("CORS_ORIGIN_ALLOW_ALL"))
+CORS_ALLOW_CREDENTIALS = True
 
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
-
+# Primary key in database
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# USER MODEL
+AUTH_USER_MODEL = 'accounts.User'
+
+
+# EMAIL CONFIGURATION
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# MAILER_EMAIL_BACKEND = EMAIL_BACKEND
+ACCOUNT_ACTIVATION_DAYS = 3
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'profatilov.woodman@gmail.com'
+EMAIL_HOST_PASSWORD = 'sxlfmtnwffkmdibv'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+
+# Site name
+SITE_NAME = 'Django Portfolio'
+
+

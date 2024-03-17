@@ -11,7 +11,7 @@ from blog.paginations import PostLimitOffsetPagination, PostPageNumberPagination
 from .permissions import IsOwnerOrReadOnly
 from rest_framework.permissions import (
     IsAuthenticatedOrReadOnly,
-    AllowAny,
+    AllowAny, IsAuthenticated,
 )
 
 from .models import Comment
@@ -59,17 +59,21 @@ class CommentCreateAPIView(CreateAPIView):
     API endpoint that allows ADMIN users create posts
     '''
     queryset = Comment.objects.all()
-    permission_classes = (IsAuthenticatedOrReadOnly, )
+    permission_classes = (IsAuthenticated, )
 
     def get_serializer_class(self):
         model_type = self.request.query_params.get('type', 'post')
         slug = self.request.query_params.get('slug')
         parent_id = self.request.query_params.get('parent_id')
+
         return create_comment_serializer(
             model_type=model_type,
             slug=slug,
             parent_id=parent_id,
         )
+    
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
 
 
 class CommentDetailAPIView(RetrieveAPIView, UpdateAPIView, DestroyAPIView):

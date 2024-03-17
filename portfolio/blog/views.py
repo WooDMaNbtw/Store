@@ -73,7 +73,7 @@ class PostDetailAPIView(RetrieveAPIView):
     """
     queryset = Post.objects.all()
     serializer_class = PostDetailSerializer
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (AllowAny, )
     lookup_field = 'slug'
 
 
@@ -84,7 +84,7 @@ class PostUpdateAPIView(UpdateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostDetailSerializer
     lookup_field = 'slug'
-    permission_classes = (IsAdminUser, IsAuthenticated)
+    permission_classes = (IsAdminUser, )
 
     def perform_update(self, serializer):
         serializer.save(user=self.request.user)
@@ -96,5 +96,5 @@ class PostDeleteAPIView(DestroyAPIView):
     '''
     queryset = Post.objects.all()
     serializer_class = PostDetailSerializer
-    permission_classes = (IsAdminUser, IsAuthenticated)
+    permission_classes = (IsAdminUser, )
     lookup_field = 'slug'
