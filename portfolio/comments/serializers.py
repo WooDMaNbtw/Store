@@ -1,26 +1,31 @@
-from django.contrib.auth.models import User
+from accounts.models import User
 from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 from .models import Comment
-from accounts.serializers import UserDetailSerializer
+from accounts.serializers import UserSerializer
 
 
 def create_comment_serializer(model_type='post', slug=None, parent_id=None, user=None):
 
     class CommentCreateSerializer(serializers.ModelSerializer):
+        user = UserSerializer(read_only=True)
+
         class Meta:
             model = Comment
             fields = (
                 'id',
                 'parent',
                 'content',
+                'user',
                 'timestamp',
+            )
+            read_only_fields = (
+                'user',
             )
 
         def __init__(self, *args, **kwargs):
             self.model_type = model_type
-            print(model_type)
             self.slug = slug
             self.user = user
             self.parent_obj = None
@@ -64,7 +69,7 @@ def create_comment_serializer(model_type='post', slug=None, parent_id=None, user
 
 class __BaseCommentSerializer(serializers.ModelSerializer):
 
-    user = UserDetailSerializer()
+    user = UserSerializer()
     replies_count = None
     replies = None
     content_object_url = None
@@ -95,6 +100,7 @@ class __BaseCommentSerializer(serializers.ModelSerializer):
 class CommentListSerializer(__BaseCommentSerializer):
 
     replies_count = SerializerMethodField()
+    replies = SerializerMethodField()
 
     class Meta:
         model = Comment
@@ -103,6 +109,7 @@ class CommentListSerializer(__BaseCommentSerializer):
             'user',
             'content',
             'replies_count',
+            'replies',
             'timestamp',
         )
 

@@ -1,12 +1,12 @@
 from rest_framework import serializers
-from .models import Experience
-from accounts.serializers import UserDetailSerializer
+from .models import Experience, Information
+from accounts.serializers import UserSerializer
 from projects.models import Project
 from projects.serializers import ProjectDetailSerializer
 
 
 class BiographyListSerializer(serializers.ModelSerializer):
-    projects_count = serializers.SerializerMethodField()
+    # projects_count = serializers.SerializerMethodField()
     url = serializers.HyperlinkedIdentityField(
         view_name='bio-detail',
         lookup_field='slug',
@@ -14,7 +14,7 @@ class BiographyListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Experience
-        fields = ('url', 'title', 'company', 'position', 'projects_count')
+        fields = ('url', 'slug', 'title', 'company', 'position', 'description')
 
     @staticmethod
     def get_projects_count(obj):
@@ -32,6 +32,7 @@ class BiographyCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Experience
         fields = ('user', 'title', 'company', 'position', 'description', 'begin_time', 'end_time')
+        read_only_fields = ('user', )
 
     def validate(self, data):
         title = data.get('title')
@@ -43,7 +44,7 @@ class BiographyCreateSerializer(serializers.ModelSerializer):
 
 class BiographyDetailSerializer(serializers.ModelSerializer):
     projects = serializers.SerializerMethodField()
-    user = UserDetailSerializer(read_only=True)
+    user = UserSerializer(read_only=True)
 
     class Meta:
         model = Experience
@@ -59,4 +60,16 @@ class BiographyDetailSerializer(serializers.ModelSerializer):
         return None
 
 
+class BiographyInfoSerializer(serializers.ModelSerializer):
 
+    class Meta:
+        model = Information
+        fields = '__all__'
+
+
+class BiographyInfoCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Information
+        fields = '__all__'
+        read_only_fields = ('user', )

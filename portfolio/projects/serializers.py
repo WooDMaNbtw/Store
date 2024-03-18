@@ -20,6 +20,7 @@ class ProjectListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = (
+            'id',
             'url',
             'title',
             'link',

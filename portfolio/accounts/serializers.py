@@ -1,31 +1,21 @@
-import requests
-from django.contrib.auth.models import User
+from accounts.models import User
 from rest_framework import serializers
-from django.db.models import Q
-from rest_framework_simplejwt.serializers import TokenObtainSerializer, TokenObtainPairSerializer
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.contrib.auth import get_user_model
+from djoser.serializers import (
+    UserSerializer as BaseUserSerializer,
+    UserCreateSerializer as BaseUserCreateSerializer
+)
+
+user = get_user_model()
 
 
-class UserDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
+class UserCreateSerializer(BaseUserCreateSerializer):
+    email = serializers.EmailField(required=True)
+
+    class Meta(BaseUserSerializer.Meta):
         fields = (
-            'username',
             'email',
-        )
-
-
-class UserCreateSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(required=False, allow_blank=True)
-    email = serializers.EmailField(allow_blank=False)
-    confirm_email = serializers.EmailField(required=True)
-
-    class Meta:
-        model = User
-        fields = (
-            'username',
-            'email',
-            'confirm_email',
             'password'
         )
         extra_kwargs = {
@@ -37,90 +27,43 @@ class UserCreateSerializer(serializers.ModelSerializer):
             }
         }
 
-    def create(self, validated_data):
-        username = validated_data.get('username')
-        email = validated_data.get('email')
-        password = validated_data.get('password')
-        user_obj = User(
-            username=username,
-            email=email
-        )
-        user_obj.set_password(password)
-        user_obj.save()
-        return validated_data
-
-    def validate_confirm_email(self, confirm_email):
-        data = self.get_initial()
-        email1 = data.get('email')
-
-        if email1 != confirm_email:
-            raise serializers.ValidationError("Emails must match.")
-
-        return confirm_email
-
-    def validate(self, data):
-        email = data.get('email')
-        user_queryset = User.objects.filter(email=email)
-        if user_queryset.exists():
-            raise serializers.ValidationError("This user has already been registered.")
-        return data
+    def validate(self, attrs):
+        # Validate uniqueness of email
+        email = attrs.get('email')
+        if User.objects.filter(email=email).exists():
+            raise serializers.ValidationError('User with this email already exists.')
+        return attrs
 
 
-class UserLoginSerializer(serializers.ModelSerializer):
-    access_token = serializers.CharField(allow_blank=True, read_only=True)
-    username = serializers.CharField(required=False, allow_blank=True)
-    email = serializers.EmailField(allow_blank=False)
+class UserSerializer(BaseUserSerializer):
 
-    class Meta:
-        model = User
+    class Meta(BaseUserSerializer.Meta):
         fields = (
+            'id',
             'username',
             'email',
-            'password',
-            'access_token'
         )
-        extra_kwargs = {
-            'password': {
-                'write_only': True,
-                'style': {
-                    'input_type': 'text'
-                }
-            }
-        }
-
-    def validate(self, data):
-        email = data.get('email')
-        username = data.get('username')
-        password = data.get('password')
-        if not email:
-            raise serializers.ValidationError("User email is required to login.")
-        user = User.objects.filter(
-            Q(email=email) |
-            Q(username=username)
-        ).distinct()
-
-        if user.exists() and user.count() == 1:
-            user_obj = user.first()
-        else:
-            raise serializers.ValidationError("This username or email is not valid.")
-
-        if user_obj:
-            if not user_obj.check_password(password):
-                raise serializers.ValidationError("Incorrect credentials please try again.")
-
-        refresh = RefreshToken.for_user(user_obj)
-        data["access_token"] = str(refresh.token)
-
-        return data
 
 
-class TokenPairSerializer(TokenObtainPairSerializer):
+class UserDetailSerializer(BaseUserSerializer):
 
+    class Meta(BaseUserSerializer.Meta):
+        model = user
+        fields = '__all__'
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
-        raw_username = attrs["username"]
-        users = User.objects.filter(email=raw_username)
-        if users:
-            attrs['username'] = users.first().username
-        data = super(TokenPairSerializer, self).validate(attrs)
+        data = super().validate(attrs)
+
+        obj = self.user
+
+        data.update({
+            'id': obj.id,
+            'email': obj.email,
+            'username': obj.username,
+            'is_active': obj.is_active
+        })
+
         return data
 
