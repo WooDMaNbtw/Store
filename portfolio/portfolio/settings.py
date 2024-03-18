@@ -25,6 +25,7 @@ env = environ.Env(
 
     # Internal IPS
     INTERNAL_IPS=str,
+    APP_ID=str
 )
 
 
@@ -41,6 +42,9 @@ environ.Env.read_env(BASE_DIR / '.env.local')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY")
+
+# APP SECURITY KEY
+APP_ID = env("APP_ID")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
