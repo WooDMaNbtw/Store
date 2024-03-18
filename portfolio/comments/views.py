@@ -70,6 +70,7 @@ class CommentCreateAPIView(CreateAPIView):
             model_type=model_type,
             slug=slug,
             parent_id=parent_id,
+            user=self.request.user
         )
     
     def post(self, request, *args, **kwargs):
