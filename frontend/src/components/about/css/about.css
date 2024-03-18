@@ -1,0 +1,202 @@
+.about-container {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.about-list {
+    display: flex;
+    flex-direction: column; /* Расположение записей опыта в столбец */
+}
+
+.about-item {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.about-item h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.about-item p {
+    margin: 5px 0;
+    word-wrap: break-word;
+}
+
+/* Styling for details section */
+.details {
+    border-top: 1px solid #fff;
+    padding-top: 10px;
+    margin-top: 10px;
+}
+
+.details p {
+    font-size: 14px;
+    color: #333333;
+}
+
+/* Styling for about section */
+.about-info {
+    margin-top: 20px;
+}
+
+.about-info h4 {
+    color: #333333;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.about-info p {
+    color: #333333;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+/* Styling for loading state */
+.loading {
+    color: #c71bc7;
+    font-size: 18px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Styling for error state */
+.error {
+    color: #ff0000;
+    font-size: 18px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Styling for links */
+.details a {
+    color: #333333;
+    text-decoration: underline;
+}
+
+/* Styling for headings */
+.about-item h2 {
+    font-size: 24px;
+    color: #333333;
+    margin-bottom: 10px;
+}
+
+.about-item h3 {
+    font-size: 20px;
+    color: #333333;
+    margin-bottom: 10px;
+}
+
+.about-info h3 {
+    color: #333333;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.about-info div {
+    border-top: 1px solid #000; /* Change border color to black */
+    padding-top: 10px;
+}
+
+
+/* Styling for paragraphs */
+.about-item p {
+    font-size: 16px;
+    color: #333333;
+    margin-bottom: 5px;
+}
+
+.profile-image {
+    display: flex;
+    float: right;
+    width: 250px;
+    height: 250px;
+    overflow: hidden;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.profile-image img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 992px) {
+    .profile-image {
+        width: 150px; /* Adjust width for smaller screens */
+        height: auto; /* Adjust height for smaller screens */
+        margin-bottom: 150px;
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-image {
+        width: 120px; /* Adjust width for smaller screens */
+        height: auto; /* Adjust height for smaller screens */
+        margin-bottom: 300px;
+    }
+}
+
+@media (max-width: 576px) {
+    .profile-image {
+        width: 120px; /* Adjust width for smaller screens */
+        height: auto; /* Adjust height for smaller screens */
+        margin-bottom: 160px;
+    }
+}
+/* Media query for even smaller screens */
+@media (max-width: 480px) {
+    .profile-image {
+        width: 0px; /* Adjust width for even smaller screens */
+        height: auto; /* Adjust height for even smaller screens */
+    }
+}
+
+.header-info {
+    display: flex;
+    align-items: center;
+}
+.header-info {
+    display: flex;
+    align-items: center;
+}
+
+.social-networks {
+    margin-top: 20px;
+}
+
+.social-networks h3 {
+    font-size: 20px;
+    color: #000; /* Change color to black */
+    margin-bottom: 10px;
+}
+
+.social-networks .details {
+    border-top: 1px solid #000; /* Change border color to black */
+    padding-top: 10px;
+}
+
+.social-networks .details p {
+    font-size: 16px;
+    color: #000; /* Change color to black */
+    margin: 5px 0;
+}
+
+.social-networks .details a {
+    color: #2173ee; /* Change link color to black */
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.social-networks .details a:hover {
+    color: #003ef8; /* Change link color to black */
+    cursor: pointer;
+}

@@ -1,0 +1,40 @@
+.custom-nav {
+    background-color: #f8f9fa; /* Светло-серый цвет фона */
+    border-radius: 15px; /* Закругление углов */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Тень */
+    /*padding: 20px; !* Увеличение отступа внутри навигационной панели *!*/
+    border: 2px solid #ced4da; /* Обводка вокруг навигационной панели */
+}
+
+.custom-nav .nav-link {
+    text-align: center;
+    color: #303034; /* Цвет текста */
+    font-weight: bold; /* Жирный шрифт */
+    padding: 10px; /* Увеличение отступа внутри ссылки */
+    border-radius: 10px; /* Закругление углов ссылки */
+    margin-bottom: 10px; /* Отступ между пунктами меню */
+    position: relative; /* Позиционирование элемента */
+}
+
+.custom-nav .nav-link .active {
+    background-color: #3e403f; /* Цвет активного элемента */
+    color: #fff; /* Цвет текста активного элемента */
+}
+
+.custom-nav .nav-link:not(.active)::before,
+.custom-nav .nav-link:not(.active)::after {
+    content: ''; /* Создание псевдоэлементов */
+    position: relative; /* Позиционирование псевдоэлементов */
+    display: flex;
+    bottom: 0; /* Размещение псевдоэлементов внизу */
+    left: 15%; /* Начальное положение по горизонтали */
+    width: 0; /* Начальная ширина */
+    height: 1px; /* Толщина подчеркивания */
+    background-color: #303034; /* Цвет подчеркивания */
+    transition: width 0.3s ease; /* Анимация увеличения ширины */
+}
+
+.custom-nav .nav-link:not(.active):hover::before,
+.custom-nav .nav-link:not(.active):hover::after {
+    width: 70%; /* Увеличение ширины псевдоэлементов до 50% при наведении */
+}
