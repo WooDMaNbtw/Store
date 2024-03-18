@@ -3,6 +3,7 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 from rest_framework_swagger.views import get_swagger_view
+from .settings import APP_ID
 
 schema_view = get_swagger_view(
     title='Portfolio API',
@@ -16,15 +17,15 @@ urlpatterns = [
 
 # 3rd party services
 urlpatterns += [
-    path("api/v0/posts/", include("blog.urls"), name="blog"),
-    path("api/v0/comments/", include("comments.urls"), name="comments"),
-    path("api/v0/biography/", include("biography.urls"), name="biography"),
-    path("api/v0/projects/", include("projects.urls"), name="projects"),
+    path(f"api/v0/{APP_ID}/posts/", include("blog.urls"), name="blog"),
+    path(f"api/v0/{APP_ID}/comments/", include("comments.urls"), name="comments"),
+    path(f"api/v0/{APP_ID}/biography/", include("biography.urls"), name="biography"),
+    path(f"api/v0/{APP_ID}/projects/", include("projects.urls"), name="projects"),
 ]
 
 # Authentication
 urlpatterns += [
-    path("api/v0/", include("accounts.urls"), name="accounts"),
+    path(f"api/v0/{APP_ID}/", include("accounts.urls"), name="accounts"),
 ]
 
 if settings.DEBUG:
