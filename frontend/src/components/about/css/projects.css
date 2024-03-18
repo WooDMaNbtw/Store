@@ -1,0 +1,45 @@
+.projects-container {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.projects-list {
+    display: flex;
+    flex-direction: column; /* Расположение записей опыта в столбец */
+}
+
+.projects-item {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.projects-item h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.projects-item p {
+    margin: 5px 0;
+    word-wrap: break-word;
+}
+
+.projects-link {
+    text-decoration: none; /* Убираем подчеркивание */
+    color: #333; /* Изменяем цвет ссылки */
+}
+
+.projects-link:hover {
+    text-decoration: none; /* Убираем подчеркивание при наведении */
+    color: #494949; /* Изменяем цвет ссылки при наведении */
+}
+
+.projects-header {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}

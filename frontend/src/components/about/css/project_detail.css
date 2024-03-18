@@ -1,0 +1,51 @@
+.experience-container {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.experience-list {
+    display: flex;
+    flex-direction: column; /* Расположение записей опыта в столбец */
+}
+
+.experience-item {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    cursor: pointer; /* Изменение курсора при наведении */
+    transition: transform 0.3s ease; /* Анимация при наведении */
+}
+
+.experience-item:hover {
+    transform: translateY(-5px); /* Небольшое поднятие при наведении */
+}
+
+.experience-item h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.experience-item p {
+    margin: 5px 0;
+    word-wrap: break-word;
+}
+
+.experience-link {
+    text-decoration: none; /* Убираем подчеркивание */
+    color: #333; /* Изменяем цвет ссылки */
+}
+
+.experience-link:hover {
+    text-decoration: none; /* Убираем подчеркивание при наведении */
+    color: #555; /* Изменяем цвет ссылки при наведении */
+}
+
+.projects-header {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
