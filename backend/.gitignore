@@ -131,7 +131,7 @@ celerybeat.pid
 
 # Environments
 portfolio/.env.local
-.env.docker
+../.env.docker
 env/
 venv/
 ENV/

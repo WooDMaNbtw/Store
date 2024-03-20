@@ -3,7 +3,7 @@ import { Form, Button, Container, Row, Col, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import './css/AuthForm.css';
 import {Link, Navigate} from "react-router-dom"; // Импорт стилей
-const APP_ID = process.env.APP_ID
+const REACT_APP_APP_ID = process.env.REACT_APP_APP_ID
 
 const RegisterForm = ({ onRegisterSuccess }) => {
     const [formData, setFormData] = useState({
@@ -28,7 +28,7 @@ const RegisterForm = ({ onRegisterSuccess }) => {
                 setErrorMessage('Passwords do not match');
                 return;
             }
-            const response = await axios.post(`http://127.0.0.1:8000/api/v0/${APP_ID}/auth/users/`, formData);
+            const response = await axios.post(`http://127.0.0.1:8000/api/v0/${REACT_APP_APP_ID}/auth/users/`, formData);
             if (response.status === 200 || response.status === 204)
                 setSuccessMessage('Registration successful. Please verify your email.');
                 setIsRegistered(true);

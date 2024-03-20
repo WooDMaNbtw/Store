@@ -1,6 +1,53 @@
 version: "3.9"
 
 services:
+  backend:
+    image: port-back:0.1
+    container_name: port-back
+    volumes:
+      - static:/static
+    env_file:
+      - ./backend/portfolio/.env.local
+    build:
+      context: ./backend
+    environment:
+      - DOCKER_CONTAINER=1
+    ports:
+      - "8000:8000"
+    depends_on:
+      portfoliodb:
+        condition: service_healthy
+    networks:
+      - portfolio
+
+  frontend:
+    image: port-front:0.1
+    container_name: port-front
+    build:
+      context: ./frontend
+    volumes:
+      - frontend:/app/build
+    env_file:
+      - ./frontend/.env
+    networks:
+      - portfolio
+
+  nginx:
+    image: port-nginx:0.1
+    container_name: port-nginx
+    build:
+      context: ./nginx
+    volumes:
+      - static:/static
+      - frontend:/var/www/frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - portfolio
+
   portfoliodb:
     image: postgres:16-alpine3.18
     container_name: pgdb-portfolio
@@ -41,6 +88,8 @@ services:
 
 volumes:
   data:
+  static:
+  frontend:
 
 networks:
   portfolio:

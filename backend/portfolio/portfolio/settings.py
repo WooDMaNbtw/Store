@@ -2,7 +2,6 @@ import datetime
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-
 import environ
 
 load_dotenv()
@@ -87,8 +86,9 @@ INSTALLED_APPS += [
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    # 'portfolio.middleware.CorsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -125,13 +125,19 @@ WSGI_APPLICATION = 'portfolio.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+dbHost: str = ""
+if os.getenv('DOCKER_CONTAINER'):
+    dbHost = env("POSTGRES_DB_HOST")
+else:
+    dbHost = "localhost"
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': env("POSTGRES_DB_NAME"),
         'USER': env("POSTGRES_DB_USER"),
         'PASSWORD': env("POSTGRES_DB_PASSWORD"),
-        'HOST': env("POSTGRES_DB_HOST"),
+        'HOST': dbHost,
         'PORT': env("POSTGRES_DB_PORT"),
     }
 }
@@ -227,9 +233,11 @@ DJOSER = {
 LOGIN_FIELD = 'email'
 
 # CORS
-CORS_ALLOWED_ORIGINS = env("CORS_ALLOWED_ORIGINS").split(", ")
-CORS_ORIGIN_ALLOW_ALL = bool(env("CORS_ORIGIN_ALLOW_ALL"))
+CORS_ALLOWED_ORIGINS = env("CORS_ALLOWED_ORIGINS").split(', ')
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
+#CORS_ALLOW_HEADERS = ["*"]
+#ALLOWED_HOSTS = ['*']
 
 # Primary key in database
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
