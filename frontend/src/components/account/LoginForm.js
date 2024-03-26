@@ -20,7 +20,7 @@ const LoginForm = ({ onLoginSuccess }) => {
             // Если есть uid и token в query-параметрах URL, устанавливаем их в состояние formData
             setFormData({ ...formData, uid, token });
         }
-    }, [location.search]);
+    }, [location.search, formData]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -33,22 +33,20 @@ const LoginForm = ({ onLoginSuccess }) => {
                 const { uid, token } = formData;
                 console.log(uid, token)
                 if (uid !== undefined && token !== undefined){
-                    const response = await axios.post(`http://127.0.0.1:8000/api/v0/${REACT_APP_APP_ID}/auth/users/activation/`, {uid, token});
+                    await axios.post(`http://127.0.0.1:8000/api/v0/${REACT_APP_APP_ID}/auth/users/activation/`, {uid, token});
                 }
-                setIsRegistered(false);
             }
             // Если ответ получен успешно (204), авторизируем пользователя через email и password
             const loginResponse = await axios.post(`http://127.0.0.1:8000/api/v0/${REACT_APP_APP_ID}/auth/jwt/create/`, formData);
             // Получаем токены из ответа и записываем их в localStorage
-            console.log(loginResponse)
             const { refresh, access } = loginResponse.data;
             localStorage.setItem('refresh_token', refresh);
             localStorage.setItem('access_token', access);
             // Вызываем функцию обратного вызова для успешной авторизации
             setIsLogin(true)
-
         } catch (error) {
-            console.error('Activation error:', error.message);
+            setIsRegistered(false);
+            return console.error('Activation error:', error.message);
         }
     };
 
@@ -57,6 +55,7 @@ const LoginForm = ({ onLoginSuccess }) => {
         try {
             // Вызываем функцию для активации пользователя
             await handleActivation();
+
         } catch (error) {
             console.error('Login error:', error.message);
         }
@@ -69,6 +68,7 @@ const LoginForm = ({ onLoginSuccess }) => {
     if (isLogin) {
         return <Navigate to="/blog/" />;
     }
+
 
     return (
         <Container>

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {Button, Container, Dropdown, Form, FormControl, Nav, Navbar} from "react-bootstrap";
 import logo from '../logo.svg'
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -15,7 +15,7 @@ const Header = ({ onQueryChange }) => {
     const [searchQuery, setSearchQuery] = useState("");
     const [account, setAccount] = useState(null)
     const [showDropdown, setShowDropdown] = useState(false);
-
+    const dropdownRef = useRef(null);
 
     useEffect(() => {
         axios.get(`http://127.0.0.1:8000/api/v0/${REACT_APP_APP_ID}/auth/users/me/`, {
@@ -31,9 +31,18 @@ const Header = ({ onQueryChange }) => {
             });
     }, []);
 
-    const handleDropdownBlur = () => {
-        setShowDropdown(false);
-    };
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setShowDropdown(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [dropdownRef]);
 
     const handleDropdownFocus = () => {
         setShowDropdown(true);
@@ -55,7 +64,7 @@ const Header = ({ onQueryChange }) => {
 
     return (
         <>
-            <Navbar sticky='top' collapseOnSelect expand="md" bg="dark" variant="dark">
+            <Navbar sticky='top' collapseOnSelect bg="dark" variant="dark">
                 <Container>
                     <Navbar.Brand href="/">
                         <img
@@ -70,8 +79,8 @@ const Header = ({ onQueryChange }) => {
                     <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
                     <Navbar.Collapse id="responsive-navbar-nav">
                         <Nav className="me-auto">
-                            <Dropdown show={showDropdown} onMouseEnter={() => setShowDropdown(true)} onMouseLeave={() => setShowDropdown(false)}>
-                                <Dropdown.Toggle variant="link" id="dropdown-basic" onFocus={handleDropdownFocus} onBlur={handleDropdownBlur}>
+                            <Dropdown show={showDropdown} ref={dropdownRef}>
+                                <Dropdown.Toggle variant="link" id="dropdown-basic" onFocus={handleDropdownFocus}>
                                     <img
                                         src={userIcon}
                                         style={{
@@ -84,7 +93,7 @@ const Header = ({ onQueryChange }) => {
                                             borderRadius: '15px',
                                             height: 'auto'
                                         }}
-                                    />
+                                     alt='account'/>
                                 </Dropdown.Toggle>
 
                                 {account !== null ? (
@@ -101,7 +110,6 @@ const Header = ({ onQueryChange }) => {
                                     </Dropdown.Menu>
                                 )}
                             </Dropdown>
-
                             <Nav.Link as={Link} to="/" style={{ scale: "1.2", marginInline: '10px', marginTop: "5px" }}> Home </Nav.Link>
                             <Nav.Link as={Link} to="/blog" style={{ scale: "1.2", marginRight: '10px', marginTop: "5px" }}> Blog </Nav.Link>
                         </Nav>

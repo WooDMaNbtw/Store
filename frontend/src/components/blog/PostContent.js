@@ -2,20 +2,29 @@ import React, { useState, useEffect } from 'react';
 import Comments from './Comments';
 import './css/postContent.css';
 import axios from "axios";
-import {Navigate} from "react-router-dom";
-
 
 const REACT_APP_APP_ID = process.env.REACT_APP_APP_ID
 
-const BlogPosts = ({ query }) => {
+const BlogPosts = () => {
     const [posts, setPosts] = useState([]);
     const [comment, setComment] = useState('');
+
+    let query = ''
+    const currentUrl = window.location.href;
+    const questionMarkIndex = currentUrl.indexOf('?');
+    if (questionMarkIndex !== -1){
+        const queryString = currentUrl.slice(questionMarkIndex + 1);
+        const paramValue = queryString.split('=')[-1];
+        if (paramValue !== undefined) {
+            // Декодируем значение параметра и сохраняем его
+            query = decodeURIComponent(paramValue);
+        }
+    }
+
     // const [comments, setComments] = useState([]);
     useEffect(() => {
         axios.get(`http://127.0.0.1:8000/api/v0/${REACT_APP_APP_ID}/posts/?query=${query}`)
             .then(response => {
-                // alert(query)
-                // alert(`http://127.0.0.1:8000/api/v0/${REACT_APP_APP_ID}/posts/?query=${query}`)
                 setPosts(response.data.results);
             })
             .catch(error => {

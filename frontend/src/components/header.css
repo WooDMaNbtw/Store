@@ -4,6 +4,8 @@
 
 .dropdown {
     position: relative;
+    width: 40px;
+    height: 40px;
 }
 
 .dropdown-menu {
@@ -50,6 +52,10 @@
     color: #16181b;
     text-decoration: underline;
     background: #79b5f5;
+}
+
+.nav-link {
+    display: block;
 }
 
 .user-email {

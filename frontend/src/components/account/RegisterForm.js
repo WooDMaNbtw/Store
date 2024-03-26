@@ -39,6 +39,7 @@ const RegisterForm = ({ onRegisterSuccess }) => {
     };
 
     if (isRegistered) {
+        alert("Please check your email.\n Verification letter has been sent to your email address.")
         return <Navigate to="/sign-in" />;
     }
 
