@@ -29,12 +29,13 @@ const LoginForm = ({ onLoginSuccess }) => {
 
     const handleActivation = async () => {
         try {
-            if (!localStorage.getItem('access_token')) {
+            try {
                 const { uid, token } = formData;
-                console.log(uid, token)
                 if (uid !== undefined && token !== undefined){
                     await axios.post(`http://127.0.0.1:8000/api/v0/${REACT_APP_APP_ID}/auth/users/activation/`, {uid, token});
                 }
+            } catch (error) {
+                console.error("An error occurred:", error);
             }
             // Если ответ получен успешно (204), авторизируем пользователя через email и password
             const loginResponse = await axios.post(`http://127.0.0.1:8000/api/v0/${REACT_APP_APP_ID}/auth/jwt/create/`, formData);

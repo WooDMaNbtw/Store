@@ -215,7 +215,7 @@ SIMPLE_JWT = {
 DJOSER = {
     'LOGIN_FIELD': 'email',
     # 'USER_CREATE_PASSWORD_RETYPE': True,
-    'ACTIVATION_URL': '127.0.0.1:3000/sign-in/?uid={uid}&token={token}',
+    'ACTIVATION_URL': 'sign-in/?uid={uid}&token={token}',
     'SEND_ACTIVATION_EMAIL': True,
     'SEND_CONFIRMATION_EMAIL': True,
     'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
@@ -228,9 +228,9 @@ DJOSER = {
         'current_user': 'accounts.serializers.UserDetailSerializer',
         'user': 'accounts.serializers.UserSerializer'
     },
-    'EMAIL': {
-        'activation': 'accounts.email.ActivationEmail',
-    }
+    # 'EMAIL': {
+    #     'activation': 'accounts.email.ActivationEmail',
+    # }
 }
 
 LOGIN_FIELD = 'email'
@@ -239,8 +239,7 @@ LOGIN_FIELD = 'email'
 CORS_ALLOWED_ORIGINS = env("CORS_ALLOWED_ORIGINS").split(', ')
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
-#CORS_ALLOW_HEADERS = ["*"]
-#ALLOWED_HOSTS = ['*']
+
 
 # Primary key in database
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -263,6 +262,7 @@ EMAIL_USE_TLS = True
 
 
 # Site name
+DOMAIN = "127.0.0.1:3000"
 SITE_NAME = 'Django Portfolio'
 
 

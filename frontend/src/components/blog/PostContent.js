@@ -8,13 +8,15 @@ const REACT_APP_APP_ID = process.env.REACT_APP_APP_ID
 const BlogPosts = () => {
     const [posts, setPosts] = useState([]);
     const [comment, setComment] = useState('');
+    const [isBlankPosts, setIsBlankPosts] = useState(false)
 
     let query = ''
     const currentUrl = window.location.href;
     const questionMarkIndex = currentUrl.indexOf('?');
+
     if (questionMarkIndex !== -1){
         const queryString = currentUrl.slice(questionMarkIndex + 1);
-        const paramValue = queryString.split('=')[-1];
+        const paramValue = queryString.split('=')[1];
         if (paramValue !== undefined) {
             // Декодируем значение параметра и сохраняем его
             query = decodeURIComponent(paramValue);
@@ -23,9 +25,14 @@ const BlogPosts = () => {
 
     // const [comments, setComments] = useState([]);
     useEffect(() => {
-        axios.get(`http://127.0.0.1:8000/api/v0/${REACT_APP_APP_ID}/posts/?query=${query}`)
+        axios.get(`http://127.0.0.1:8000/api/v0/${REACT_APP_APP_ID}/posts/?query=${query.replace('+', ' ')}`)
             .then(response => {
-                setPosts(response.data.results);
+                console.log(response.data.results)
+                if (response.data.results.length !== 0){
+                    setPosts(response.data.results);
+                } else {
+                    setIsBlankPosts(true)
+                }
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
@@ -115,35 +122,60 @@ const BlogPosts = () => {
 
     return (
         <div className="blog-posts-container">
-            <h1>Blog Posts</h1>
-            {posts.map(post => (
-                <div key={post.id} className="post">
-                    <h2 className="post-title">{post.title}</h2>
-                    <p className="post-content">{post.content}</p>
-                    <p className="post-date">Published on: {new Date(post.publish).toLocaleDateString()}</p>
-                    <button className="toggle-comments-btn" onClick={() => toggleComments(post.id)}>
-                        {post.showComments ? 'Hide Comments' : 'Show Comments'}
-                    </button>
-                    {post.showComments &&
-                        <Comments
-                            comments={post.comments}
-                            slug={post.slug}
-                            postId={post.id}
-                            updateComments={updateComments}
-                        />
-                    }
-                    <div className="add-comment">
-                        <input
-                            type="text"
-                            className="comment-input"
-                            placeholder="Add a comment"
-                            onChange={handleInputChange}
-                        />
-                        <button className="add-comment-btn" onClick={() => addComment(post.id, post.slug)}>Add Comment</button>
+            {!isBlankPosts
+                ?
+                (
+                    posts.map(post => (
+                        <div key={post.id} className="post">
+                            <h2 className="post-title">{post.title}</h2>
+                            <p className="post-content">{post.content}</p>
+                            <p className="post-date">Published on: {new Date(post.publish).toLocaleDateString()}</p>
+                            <button className="toggle-comments-btn" onClick={() => toggleComments(post.id)}>
+                                {post.showComments ? 'Hide Comments' : 'Show Comments'}
+                            </button>
+                            {post.showComments &&
+                                <Comments
+                                    comments={post.comments}
+                                    slug={post.slug}
+                                    postId={post.id}
+                                    updateComments={updateComments}
+                                />
+                            }
+                            <div className="add-comment">
+                                <input
+                                    type="text"
+                                    className="comment-input"
+                                    placeholder="Add a comment"
+                                    onChange={handleInputChange}
+                                />
+                                <button className="add-comment-btn" onClick={() => addComment(post.id, post.slug)}>Add
+                                    Comment
+                                </button>
+                            </div>
+                            <hr className="post-divider"/>
+                        </div>
+                    )))
+                :
+                (
+                    <div style={{display: 'table', width: '100%', height: '80vh'}}>
+                        <div style={{display: 'table-cell', verticalAlign: 'middle', textAlign: 'center', alignItems: "center", justifyContent: "center"}}>
+                            <p className="animate-text" style={{fontSize: '30px', fontWeight: 'bold', color: 'black', marginBottom: '0px'}}>There are no blogs were found!</p>
+                            <p style={{marginBottom: '0px'}}> Please try to remove your specified query. In other cases there are no articles posted yet</p>
+                            {/*<p style={{fontSize: '20px', marginBottom: '0px'}}>To <a href='/'>home</a></p>*/}
+                            <div className="circles" style={{
+                                display: "flex",
+                                verticalAlign: 'middle',
+                                textAlign: 'center', alignItems: "center", justifyContent: "center"}}>
+                                <div className="animation circle-1"></div>
+                                <div className="animation circle-2"></div>
+                                <div className="animation circle-3"></div>
+                                <div className="animation circle-4"></div>
+                                <div className="animation circle-5"></div>
+                            </div>
+                        </div>
                     </div>
-                    <hr className="post-divider" />
-                </div>
-            ))}
+                )
+            }
         </div>
     );
 };

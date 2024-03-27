@@ -48,16 +48,40 @@ const Header = ({ onQueryChange }) => {
         setShowDropdown(true);
     };
 
+    useEffect(() => {
+        setSearchQuery(getHandleQuery());
+    }, []);
+
+    // Функция для обновления searchQuery при изменении URL
+    useEffect(() => {
+        setSearchQuery(getHandleQuery());
+    }, []);
+
     const handleSearchChange = (event) => {
         setSearchQuery(event.target.value);
     };
+
+    const getHandleQuery = () => {
+        let requestedQuery = ''
+        const currentUrl = window.location.href;
+        const questionMarkIndex = currentUrl.indexOf('?');
+
+        if (questionMarkIndex !== -1) {
+            const queryString = currentUrl.slice(questionMarkIndex + 1);
+            const paramValue = queryString.split('=')[1];
+            if (paramValue !== undefined) {
+                // Декодируем значение параметра и сохраняем его
+                requestedQuery = decodeURIComponent(paramValue);
+            }
+        }
+        return requestedQuery.replaceAll('+', ' ')
+    }
 
     const handleSearchSubmit = (event) => {
         event.preventDefault();
         const url = new URL(window.location.href);
         url.searchParams.set('query', searchQuery);
         window.location.href = url.toString();
-        onQueryChange(searchQuery);
     }
 
     const isBlogPage = location.pathname === '/blog';
@@ -110,8 +134,8 @@ const Header = ({ onQueryChange }) => {
                                     </Dropdown.Menu>
                                 )}
                             </Dropdown>
-                            <Nav.Link as={Link} to="/" style={{ scale: "1.2", marginInline: '10px', marginTop: "5px" }}> Home </Nav.Link>
-                            <Nav.Link as={Link} to="/blog" style={{ scale: "1.2", marginRight: '10px', marginTop: "5px" }}> Blog </Nav.Link>
+                            <Nav.Link as={Link} to="/" onClick={window.location.reload} style={{ scale: "1.2", marginInline: '10px', marginTop: "5px" }}> Home </Nav.Link>
+                            <Nav.Link as={Link} to="/blog" onClick={window.location.reload} style={{ scale: "1.2", marginRight: '10px', marginTop: "5px" }}> Blog </Nav.Link>
                         </Nav>
                         {isBlogPage && (
                             <Form className='d-flex' onSubmit={handleSearchSubmit}>
